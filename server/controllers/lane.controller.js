@@ -19,9 +19,9 @@ export function addLane(req, res) {
   newLane.id = uuid();
   newLane.save((err, saved) => {
     if (err) {
-      res.status(500).send(err);
+      res.status(500).send(err, 'tak');
     }
-    res.json( saved );
+    res.json(saved);
   });
 }
 

@@ -25,23 +25,31 @@ export function addNote(req, res) {
     }
     Lane.findOne({ id: laneId })
       .then(lane => {
-        lane.notes.push(saved);
+        lane.notes.push( saved );
         return lane.save();
       })
       .then(() => {
-        res.json(saved);
+        res.json( saved );
       });
   });
 }
 
 export function deleteNote(req, res) {
-  Note.findOne({ id: req.params.noteId }).exec((err, note) => {
-    if (err) {
-      res.status(500).send(err);
-    }
+  Lane.findOne({ id: req.body.laneId }).then(lane => {
+    const newNotes = lane.notes.filter(note => note !== req.params.noteId);
 
-    note.remove(() => {
-      res.status(200).end();
+    lane.notes = newNotes;
+
+    lane.save(() => {
+      Note.findOne({ id: req.params.noteId }).exec((err, note) => {
+        if (err) {
+          res.status(500).send(err);
+        }
+
+        note.remove(() => {
+          res.status(200).end();
+        });
+      });
     });
   });
 }
