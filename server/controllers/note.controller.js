@@ -36,7 +36,7 @@ export function addNote(req, res) {
 
 export function deleteNote(req, res) {
   Lane.findOne({ id: req.body.laneId }).then(lane => {
-    const newNotes = lane.notes.filter(note => note !== req.params.noteId);
+    const newNotes = lane.notes.filter(note => note.id !== req.params.noteId);
 
     lane.notes = newNotes;
 
@@ -51,5 +51,14 @@ export function deleteNote(req, res) {
         });
       });
     });
+  });
+}
+
+export function renameNote(req, res) {
+  Note.findOneAndUpdate({ id: req.params.noteId }, { $set: { task: req.body.task} }).exec((err, note) => {
+    if (err) {
+      res.status(500).send(err);
+    }
+      res.status(200).end();
   });
 }
